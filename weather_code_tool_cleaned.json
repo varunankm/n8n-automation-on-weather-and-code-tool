@@ -1,0 +1,184 @@
+{
+  "name": "weather + code tool",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -144,
+        -64
+      ],
+      "id": "489d6d8b-2d31-4cf6-af65-fbe6091c23aa",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -144,
+        144
+      ],
+      "id": "e6c5b208-07bf-4763-b97d-a791bb834b4c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat-v3.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        144
+      ],
+      "id": "e12e16ef-0755-4d05-877e-f5a98a3b5585",
+      "name": "OpenRouter Chat Model"
+    },
+    {
+      "parameters": {
+        "language": "python"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        144
+      ],
+      "id": "96f65039-f1f6-4313-b4cc-5369b1d54c65",
+      "name": "Code Tool"
+    },
+    {
+      "parameters": {
+        "cityName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('City', ``, 'string') }}",
+        "language": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Language', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.openWeatherMapTool",
+      "typeVersion": 1,
+      "position": [
+        16,
+        144
+      ],
+      "id": "1b768fdb-8820-4848-b9e8-e7b0599be36a",
+      "name": "OpenWeatherMap"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        -64
+      ],
+      "id": "8358d552-e2d7-4be2-9d18-ed9a34dee25c",
+      "name": "When chat message received",
+      "webhookId": "2e35d658-9312-490c-9307-c8039762ad4d"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "77197318527415",
+        "recipientPhoneNumber": "+919566668691",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        -48
+      ],
+      "id": "22e75b55-4346-4739-84fe-91bf508ae30f",
+      "name": "Send message",
+      "webhookId": "4d158c5c-61ff-4d53-8ec252-07f67625ff17"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenWeatherMap": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "eac1ada0-ce10-4180-8b9f-3b00ba9b48cd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8e4c315856d3852bb60afc8c8edf52278014805ba4fce23e842f972f835793d1f20"
+  },
+  "id": "IgcX6CIh4G46GBS0",
+  "tags": []
+}
